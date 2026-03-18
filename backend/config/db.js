@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 
 export const connectDB = async () => {
-  await mongoose
-    .connect(
-      "mongodb+srv://narmadha:narmadha123@cluster0.xxemdt6.mongodb.net/food-del"
-    )
-    .then(() => console.log("DB Connected"));
+  try {
+    await mongoose.connect("mongodb://mongo:27017/food-del");
+    console.log("MongoDB connected");
+  } catch (error) {
+    console.error("DB connection error:", error);
+    process.exit(1);
+  }
 };
-
-// add your mongoDB connection string above.
-// Do not use '@' symbol in your databse user's password else it will show an error.
