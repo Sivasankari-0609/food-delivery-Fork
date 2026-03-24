@@ -1,8 +1,8 @@
-version: '3.8'
+version: '3.8'  
 
 services:
   backend:
-    image: sivasankariss/food-backend:latest
+    build: ./backend
     ports:
       - "5000:5000"
     env_file:
@@ -12,7 +12,6 @@ services:
 
   mongo:
     image: mongo:6
-    container_name: food-mongo
     ports:
       - "27017:27017"
     volumes:

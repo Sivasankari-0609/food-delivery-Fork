@@ -37,6 +37,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+                    docker rm -f food-mongo || true
                     docker-compose down || true
                     docker-compose up -d
                     '''
