@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    image: sivasankariss/food-backend:latest
     ports:
       - "5000:5000"
     env_file:
