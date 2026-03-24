@@ -6,6 +6,7 @@ pipeline {
         DOCKER_TAG = "latest"
     }
 
+    stages {
 
         stage('Build Docker Image') {
             steps {
@@ -36,20 +37,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                cd $WORKSPACE
-                docker compose down -v || true
+                docker compose down || true
                 docker compose up -d
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo '✅ Build + Deploy SUCCESS'
-        }
-        failure {
-            echo '❌ Pipeline FAILED'
         }
     }
 }
