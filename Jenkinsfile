@@ -6,13 +6,6 @@ pipeline {
         DOCKER_TAG = "latest"
     }
 
-    stages {
-
-        stage('Clone Code') {
-            steps {
-                git 'https://github.com/Sivasankari-0609/food-delivery-Fork.git'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
