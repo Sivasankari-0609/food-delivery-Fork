@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "sivasankariss/food-backend"
         DOCKER_TAG = "latest"
+        AWS_SECRET_ACCESS_KEY=123456789
     }
 
     stages {
