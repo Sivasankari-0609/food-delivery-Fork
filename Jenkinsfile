@@ -15,7 +15,7 @@ pipeline {
                     docker run --rm \
                     -e SONAR_HOST_URL=http://host.docker.internal:9000 \
                     -e SONAR_LOGIN=$SONAR_AUTH_TOKEN \
-                    -v "/c/Users/gowri shankar/Desktop/food-delivery-Fork:/usr/src" \
+                    -v "$WORKSPACE:/usr/src" \
                     sonarsource/sonar-scanner-cli \
                     -Dsonar.projectKey=food-delivery \
                     -Dsonar.sources=.
