@@ -14,6 +14,15 @@ pipeline {
             }
         }
 
+        stage('Verify Workspace') {
+            steps {
+                sh '''
+                echo "Workspace: $WORKSPACE"
+                ls -la
+                '''
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
@@ -21,11 +30,12 @@ pipeline {
                         sh '''
                         docker run --rm \
                         -e SONAR_HOST_URL=$SONAR_HOST_URL \
-                        -e SONAR_LOGIN=$SONAR_TOKEN \
+                        -e SONAR_TOKEN=$SONAR_TOKEN \
                         -v "$WORKSPACE:/usr/src" \
                         sonarsource/sonar-scanner-cli \
                         -Dsonar.projectKey=food-delivery \
-                        -Dsonar.sources=.
+                        -Dsonar.sources=backend \
+                        -Dsonar.login=$SONAR_TOKEN
                         '''
                     }
                 }
@@ -36,6 +46,8 @@ pipeline {
             steps {
                 dir('backend') {
                     sh '''
+                    echo "Building Docker image..."
+                    ls -la
                     docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
                     '''
                 }
@@ -50,7 +62,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                     '''
                 }
             }
@@ -67,9 +79,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                docker rm -f food-mongo || true
+                echo "Stopping old containers..."
+                docker rm -f food-backend || true
+
+                echo "Starting new deployment..."
                 docker compose down || true
-                docker compose up -d
+                docker compose up -d || true
                 '''
             }
         }
@@ -77,10 +92,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline executed successfully!'
+            echo "Pipeline executed successfully!"
         }
         failure {
-            echo 'Pipeline failed!'
+            echo "Pipeline failed! Check logs."
         }
     }
 }
