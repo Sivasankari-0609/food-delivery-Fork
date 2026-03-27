@@ -29,13 +29,12 @@ pipeline {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         sh '''
                         docker run --rm \
-                        -e SONAR_HOST_URL=$SONAR_HOST_URL \
+                        -e SONAR_HOST_URL=http://host.docker.internal:9000 \
                         -e SONAR_TOKEN=$SONAR_TOKEN \
-                        -v "$WORKSPACE:/usr/src" \
+                        -v /var/jenkins_home/workspace/food-delivery-backend1:/usr/src \
                         sonarsource/sonar-scanner-cli \
                         -Dsonar.projectKey=food-delivery \
-                        -Dsonar.sources=backend \
-                        -Dsonar.login=$SONAR_TOKEN
+                        -Dsonar.sources=backend
                         '''
                     }
                 }
