@@ -28,6 +28,8 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         sh '''
+                        ls -la /usr/src
+                        ls -la /usr/src/backend
                         docker run --rm \
                         -e SONAR_HOST_URL=http://host.docker.internal:9000 \
                         -e SONAR_TOKEN=$SONAR_TOKEN \
