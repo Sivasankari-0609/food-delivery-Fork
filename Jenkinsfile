@@ -4,10 +4,25 @@ pipeline {
     environment {
         DOCKER_IMAGE = "sivasankariss/food-backend"
         DOCKER_TAG = "latest"
-        AWS_SECRET_ACCESS_KEY=123456789
     }
 
     stages {
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    docker run --rm \
+                    -e SONAR_HOST_URL=http://host.docker.internal:9000 \
+                    -e SONAR_LOGIN=$SONAR_AUTH_TOKEN \
+                    -v "/c/Users/gowri shankar/Desktop/food-delivery-Fork:/usr/src" \
+                    sonarsource/sonar-scanner-cli \
+                    -Dsonar.projectKey=food-delivery \
+                    -Dsonar.sources=.
+                    '''
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -38,10 +53,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    docker rm -f food-mongo || true
-                    docker-compose down || true
-                    docker-compose up -d
-                    '''
+                docker rm -f food-mongo || true
+                docker-compose down || true
+                docker-compose up -d
+                '''
             }
         }
     }
