@@ -28,15 +28,14 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                         sh '''
-                        ls -la /usr/src
-                        ls -la /usr/src/backend
                         docker run --rm \
-                        -e SONAR_HOST_URL=http://host.docker.internal:9000 \
+                        -e SONAR_HOST_URL=$SONAR_HOST_URL \
                         -e SONAR_TOKEN=$SONAR_TOKEN \
-                        -v /var/jenkins_home/workspace/food-delivery-backend1:/usr/src \
+                        -v "$WORKSPACE:/usr/src" \
                         sonarsource/sonar-scanner-cli \
                         -Dsonar.projectKey=food-delivery \
-                        -Dsonar.sources=backend
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=node_modules/**,dist/**,build/**
                         '''
                     }
                 }
