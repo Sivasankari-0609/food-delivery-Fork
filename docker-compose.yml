@@ -1,4 +1,4 @@
-version: '3.8'  
+version: '3.8'
 
 services:
   backend:
@@ -9,6 +9,14 @@ services:
       - ./backend/.env
     depends_on:
       - mongo
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "50000:50000"
+      - "8080:8080"
+    environment:
+      - DOCKER_HOST=tcp://host.docker.internal:2375
 
   mongo:
     image: mongo:6
